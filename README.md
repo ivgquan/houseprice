@@ -121,7 +121,7 @@ price_data["adj_value"] = price_data["House Value"] / price_data["CPI"] * 100 #c
 
 ![image](https://user-images.githubusercontent.com/131565330/235101156-2269a48f-65e0-4e9d-b88d-807dd7d2d74d.png)
 
-# **III. Set up Target**
+# **III. SET UP TARGET**
 
 I will try to predict what will happen to house prices next Quarter **(go up or go down 3months from now)** by using pandas shift method.
 
@@ -173,7 +173,7 @@ predictors = ["Interest rate", "Vacancy rate", "adj_price", "adj_value"] #use 4 
 target = "change"
 ```
 
-# **IV. Build Model**
+# **IV. BUILD MODEL**
 
 ```php
 from sklearn.ensemble import RandomForestClassifier
@@ -212,7 +212,7 @@ def backtest(data, predictors, target):
 
 Now, it shows that I have **59%** accuracy in my predictions.
 
-# **V. Improve Model**
+# **V. IMPROVE MODEL**
 
 Now, I will need to **add more variables** into my model to give the model extra information.
 
@@ -250,7 +250,7 @@ preds, accuracy = backtest(price_data, predictors + yearly_ratios, target)
 
 **Now, it shows that I have 65% accuracy in my predictions**. This means adding in these ratios has given the algorithm good information that it can use to make better decisions.
 
-# **VI. Future value prediction**
+# **VI. FUTURE VALUE PREDICTION**
 
 After part V, I know that **adding more ratios will bring predictions with a higher accuracy rate** (65%). Therefore, I will make a new dataframe called **price_data_need_to_predict** which is the same as original dataset (**price_data**) but then I will add 4 new variables to **price_data_need_to_predict**.
 
@@ -353,7 +353,7 @@ plot_data.reset_index().plot.scatter(x="index", y="adj_price", color=pred_match)
 
 **The graph above shows that** when the house price is in uptrend, the model tends to provide more accurate predictions.
 
-# **VII. Ideas to improve the model** 
+# **VII. FURTHER IDEAS TO KEEP IMPROVING MODEL** 
 
 Adding in more predictors that **explain when the market is about to shift** like news articles or other economic data sets, economic indicators, stock market indicators, gold price, place information where new house is being built, criminal rate, etc could help improve this model.
 

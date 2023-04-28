@@ -38,7 +38,7 @@ dfs = [pd.read_csv(f, parse_dates=True, index_col=0) for f in fed_files]
 
 ![image](https://user-images.githubusercontent.com/131565330/235098928-d0cd2225-f905-4398-ab68-5fbd9560113c.png)
 
-I will **Combine 3 dataframes to 1 big dataframe** and we can see NaN because those are reported in different time **(Weekly, Quarterly and Monthly)**.
+I will **combine 3 dataframes to 1 big dataframe** and we can see NaN because those are reported in different time **(Weekly, Quarterly and Monthly)**.
 ```php
 fed_data = pd.concat(dfs, axis=1)
 fed_data.tail(7)
@@ -46,8 +46,8 @@ fed_data.tail(7)
 
 ![image](https://user-images.githubusercontent.com/131565330/235099359-c263c408-1f8d-446b-8716-2234934cc0ce.png)
 
-**To fix this issue,** I will assume that these rates are going to stay constant for the period in which they are released by using **forward filling**.
-For example, **the US CPI (3rd Column)** is released **Monthly** so I will assume that **295.271** will stay constant for the whole month **(July,2022)**.
+* **To fix this issue,** I will assume that these rates are going to stay constant for the period in which they are released by using **forward filling**.
+* For example, **the US CPI (3rd Column)** is released **Monthly** so I will assume that **295.271** will stay constant for the whole month **(July,2022)**.
 
 ```php
 fed_data= fed_data.ffill()
@@ -64,7 +64,7 @@ zillow_files = ["Metro_median_sale_price_uc_sfrcondo_week.csv", "Metro_zhvi_uc_s
 dfs = [pd.read_csv(f) for f in zillow_files]
 ```
 
-**In these 2 dataset**, we can see that
+**In these 2 dataset**, we can see that:
 * Each rows is a region in the US
 * Columns shows information about the region
 
@@ -94,12 +94,13 @@ del price_data["month"] #Drop column month
 price_data.columns = ["price", "value"] #Change columns name
 price_data
 ```
+Now I have **price_data**.
 
 ![image](https://user-images.githubusercontent.com/131565330/235099888-22cb88d5-922a-40be-a417-00c3afa6957e.png)
 
-**C.** Merge **Zillow** price data with **FED** economic data
+**C. Merge Zillow price data with FED economic data**
 
-**Because FED released its data 2 days sooner than Zillow,** so I am going to add a couple of days(shift forward) to align Fed data with Zillow data
+Because FED released its data 2 days sooner than Zillow, so I am going to add a couple of days **(shift forward)** to align Fed data with Zillow data.
 
 ```php
 from datetime import timedelta
@@ -113,7 +114,7 @@ price_data
 ![image](https://user-images.githubusercontent.com/131565330/235100063-bff69dce-8b51-417e-97db-2dec0e8320bf.png)
 
 **D. Data Visualization Overview**
-
+I will remove Inflation to know clearly about the increase in house prices **(the Underlying house prices)**.
 ```php
 price_data.plot.line(y="Median Sale Price", use_index=True, title='Median Sale Price with Inflation')
 price_data.plot.line(y="adj_price", use_index=True, title='Median Sale Price without Inflation')
@@ -151,6 +152,9 @@ price_data
  ![image](https://user-images.githubusercontent.com/131565330/235101882-a5be722a-712a-47cb-9d43-41e4993d3f32.png)
 
 **I will add column 'Change' as a Target** to show whether the price go up or down in the next quarter.
+*   If the price of current row **goes up** in next quarter, **Change = 1**
+
+*   If the price of current row **goes down** in next quarter, **Change = 0**
 
 ```php
 price_data["change"] = (price_data["next_quarter"] > price_data["adj_price"]).astype(int)  #True =1, False=0 which means if the price goes up, change=1 and if the price goes down, change=0
@@ -184,11 +188,11 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 ```
 
-**First I will create a prediction function**. This function will take in these inputs below and **return predictions**
-* a training set 
+**First I will create a prediction function**. This function will **take in** these inputs below and **return** predictions.
+* a training set for model to train
 * a test set which is what I want to make predictions on
-* a set of predictor which are the columns I am going to use to make predictions
-* a target
+* a set of predictors which are the columns I am going to use to make predictions
+* a target show the house price goes up or down
 
 **Then I create a backtest function**. This function will let me generate predictions for most of my data set but do it in a way that respects the order of the data set so that I can avoid using future data to predict the past.
 
@@ -240,7 +244,7 @@ price_data
 
 ![image](https://user-images.githubusercontent.com/131565330/235103941-1d0785b9-8f0a-432a-98c1-68075c335b4b.png)
 
-**For example:** In 2022-04-09, Interest rate_year = 1.4 which mean the Interest rate in 2022-04-09 has increased **(Interest rate in 2022-04-09 = 1.4* Interest rate in 2021-04-09)**.
+**For example:** In 2022-04-09, Interest rate_year = 1.4 which mean the Interest rate in 2022-04-09 has increased **(Interest rate in 2022-04-09 = 1.4 x Interest rate in 2021-04-09)**.
 
 I will check again if the whether accuracy improved or not with new variable **(yearly_ratios)**.
 
@@ -254,7 +258,11 @@ preds, accuracy = backtest(price_data, predictors + yearly_ratios, target)
 
 # **VI. Future value prediction**
 
-After part V, I know that **adding more ratios will bring predictions with a higher accuracy rate** (65%). Therefore, I will make a new dataframe called **price_data_need_to_predict** which is the same as original dataset (**price_data**) but then I will add 4 new variables to **price_data_need_to_predict**.
+After part V, I know that **adding more ratios will bring predictions with a higher accuracy rate** (65%). 
+
+* Therefore, I will make a new dataframe called **price_data_need_to_predict** which is the same as original dataset (**price_data**) 
+
+* But then I will add 4 new variables to **price_data_need_to_predict**
 
 ```php
 yearly = price_data_need_to_predict.rolling(52, min_periods=1).mean() 
@@ -271,7 +279,7 @@ Now, we can see that the new dataframe has **more variables than** the old one.
 
 * **New:** price_data_need_to_predict (11 variables= 7 old variables + 4 new variables: Interest rate_year, Vacancy rate_year, adj_price_year, adj_value_year)
 
-I will drop rows in price_data_need_to_predict with null value in column 'next quarter' because next quarter of those days have not happenend yet (which means the future).
+**I will drop rows** in price_data_need_to_predict with null value in column 'next quarter' because next quarter of those days have not happenend yet (which means the future).
 
 ```php
 new_price_data_need_to_predict = price_data_need_to_predict.copy() #make copy
@@ -281,7 +289,7 @@ price_data_need_to_predict["change"] = (price_data_need_to_predict["next_quarter
 price_data_need_to_predict
 ```
 
-![image](https://user-images.githubusercontent.com/131565330/235105128-e8b1d0cb-bddc-4bd7-8a26-045d0fea3f75.png)
+![image](https://user-images.githubusercontent.com/131565330/235112838-33b4bfef-0f57-4cc6-ad23-17d7d1388ef1.png)
 
 Now, I will have **8 predictors** because part V show that add those 4 variables would improve the chance of accuracy predictions.
 
@@ -316,7 +324,7 @@ Now, I will run the model with:
 new_save['change'] = K
 new_save #future data with predict
 ```
-![image](https://user-images.githubusercontent.com/131565330/235105797-ae5d23af-cf06-4c57-a2fc-1945dc39a06b.png)
+![image](https://user-images.githubusercontent.com/131565330/235113180-64c775a5-4f90-4d69-a4dc-89c1e2822eb2.png)
 
 Now, the value in 'Change' column will show the **future trends of house prices**.
 
@@ -336,7 +344,7 @@ Now, the value in 'Change' column will show the **future trends of house prices*
 
 **Finally,** I will test this model accuracy again to see if the idea of adding more variable could bring more percentage of accuracy as it shows before **in part V**.
 
-![image](https://user-images.githubusercontent.com/131565330/235105940-5e264a1c-3576-4671-8095-6b8687a3dfb5.png)
+![image](https://user-images.githubusercontent.com/131565330/235113313-22e7e1da-2a1a-4e50-880b-d7be2ba4c1db.png)
 
 **In conclusion,** I have more than **65%** accurate for my future prediction from 2022-04-16 to 2022-07-09.
 

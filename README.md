@@ -1,6 +1,8 @@
-# **I. INTRODUCTION**
+# **I. Introduction**
 
 **A. Datasets overview**
+
+![image](https://user-images.githubusercontent.com/131565330/235108462-0059ae1c-ecf4-4d8b-aa9c-c39f1c512a4b.png)
 
 **The first 3 data sets are FED economic data:** this is from Federal Reserve Bank Of St. Louis (FED) to show the economic conditions in the US.
 
@@ -20,7 +22,7 @@
 **B. My goal**
 - Prediction will be the trend of houses price whether it goes up or down in the next reported period
 
-# **II. DATA PROCESSING**
+# **II. Data processing**
 **A. Handle FED economic data**
 
 Parse any dates in the csv file into pandas's date time and use first column as index.
@@ -121,7 +123,7 @@ price_data["adj_value"] = price_data["House Value"] / price_data["CPI"] * 100 #c
 
 ![image](https://user-images.githubusercontent.com/131565330/235101156-2269a48f-65e0-4e9d-b88d-807dd7d2d74d.png)
 
-# **III. SET UP TARGET**
+# **III. Set up target**
 
 I will try to predict what will happen to house prices next Quarter **(go up or go down 3months from now)** by using pandas shift method.
 
@@ -173,7 +175,7 @@ predictors = ["Interest rate", "Vacancy rate", "adj_price", "adj_value"] #use 4 
 target = "change"
 ```
 
-# **IV. BUILD MODEL**
+# **IV. Build model**
 
 ```php
 from sklearn.ensemble import RandomForestClassifier
@@ -212,7 +214,7 @@ def backtest(data, predictors, target):
 
 Now, it shows that I have **59%** accuracy in my predictions.
 
-# **V. IMPROVE MODEL**
+# **V. Improve model**
 
 Now, I will need to **add more variables** into my model to give the model extra information.
 
@@ -250,7 +252,7 @@ preds, accuracy = backtest(price_data, predictors + yearly_ratios, target)
 
 **Now, it shows that I have 65% accuracy in my predictions**. This means adding in these ratios has given the algorithm good information that it can use to make better decisions.
 
-# **VI. FUTURE VALUE PREDICTION**
+# **VI. Future value prediction**
 
 After part V, I know that **adding more ratios will bring predictions with a higher accuracy rate** (65%). Therefore, I will make a new dataframe called **price_data_need_to_predict** which is the same as original dataset (**price_data**) but then I will add 4 new variables to **price_data_need_to_predict**.
 
@@ -353,7 +355,7 @@ plot_data.reset_index().plot.scatter(x="index", y="adj_price", color=pred_match)
 
 **The graph above shows that** when the house price is in uptrend, the model tends to provide more accurate predictions.
 
-# **VII. FURTHER IDEAS TO KEEP IMPROVING MODEL** 
+# **VII. Further ideas to keep improving model** 
 
 Adding in more predictors that **explain when the market is about to shift** like news articles or other economic data sets, economic indicators, stock market indicators, gold price, place information where new house is being built, criminal rate, etc could help improve this model.
 

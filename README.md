@@ -1,6 +1,6 @@
 # **PROJECT: HOUSES PRICE TRENDS PREDICTION**
 
-![image](https://user-images.githubusercontent.com/131565330/235279436-aa259180-7b34-444e-939b-f6aeff76970a.png)
+![image](https://user-images.githubusercontent.com/131565330/235279514-1594cbbe-3838-4891-bf83-dd54acc587f6.png)
 
 
 ![image](https://user-images.githubusercontent.com/131565330/235114630-14721b82-40de-4ef9-82c0-f21783958df6.png)
